@@ -1,13 +1,7 @@
 import { ApiResponse } from "@/types/ApiResponse";
 import { resend } from "@/lib/resend";
 
-const VerificationEmail = ({
-  username,
-  otp,
-}: {
-  username: string;
-  otp: string;
-}) => `Verify your email, ${username}. Your verification code is ${otp}.`;
+import VerificationEmail from "../../emails/VerificationEmail";
 
 export async function sendVerificationEmail(
   email: string,
