@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         isAcceptingMesage: true,
         messages: [],
       });
-
+      await sendVerificationEmail(email, verificationCode);
       await newUser.save();
     }
   } catch (error) {
