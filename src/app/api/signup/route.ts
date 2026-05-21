@@ -7,7 +7,7 @@ import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 export async function POST(request: Request) {
   await dbConnect();
   try {
-    //
+    const { username, email, password } = await request.json();
   } catch (error) {
     console.error("Error in signup route:", error);
     return Response.json(
