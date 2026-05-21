@@ -24,18 +24,21 @@ export async function POST(request: Request) {
       );
 
       const hasedPassword = await bcrypt.hash(password, 10);
+      const verificationCode = Math.floor(
+        100000 + Math.random() * 900000,
+      ).toString();
       const newUser = new UserModel({
         username,
         email,
         password: hasedPassword,
-        isVerified: false,
+        verfiyCode: verificationCode,
+        verifyCodeExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        isverify: false,
+        isAcceptingMesage: true,
+        messages: [],
       });
 
       await newUser.save();
-
-      const verificationCode = Math.floor(
-        100000 + Math.random() * 900000,
-      ).toString();
     }
   } catch (error) {
     console.error("Error in signup route:", error);
