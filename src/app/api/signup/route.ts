@@ -23,10 +23,11 @@ export async function POST(request: Request) {
         { status: 400 },
       );
 
+      const hasedPassword = await bcrypt.hash(password, 10);
       const newUser = new UserModel({
         username,
         email,
-        password: await bcrypt.hash(password, 10),
+        password: hasedPassword,
         isVerified: false,
       });
 
