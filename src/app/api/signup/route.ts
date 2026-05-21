@@ -22,6 +22,19 @@ export async function POST(request: Request) {
         },
         { status: 400 },
       );
+
+      const newUser = new UserModel({
+        username,
+        email,
+        password: await bcrypt.hash(password, 10),
+        isVerified: false,
+      });
+
+      await newUser.save();
+
+      const verificationCode = Math.floor(
+        100000 + Math.random() * 900000,
+      ).toString();
     }
   } catch (error) {
     console.error("Error in signup route:", error);
