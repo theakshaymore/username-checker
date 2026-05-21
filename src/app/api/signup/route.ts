@@ -8,6 +8,11 @@ export async function POST(request: Request) {
   await dbConnect();
   try {
     const { username, email, password } = await request.json();
+
+    const existingUserVerfiedByUsername = UserModel.findOne({
+      username,
+      isVerified: true,
+    });
   } catch (error) {
     console.error("Error in signup route:", error);
     return Response.json(
