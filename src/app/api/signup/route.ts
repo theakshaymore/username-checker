@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/user";
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
+import { success } from "zod";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -61,6 +62,24 @@ export async function POST(request: Request) {
           email,
           username,
           verfiyCode,
+        );
+
+        if (!emailResponse.success) {
+          return Response.json(
+            {
+              success: false,
+              message: emailResponse.message,
+            },
+            { status: 500 },
+          );
+        }
+
+        return Response.json(
+          {
+            success: true,
+            message: "user registered successfully",
+          },
+          { status: 200 },
         );
       }
     }
