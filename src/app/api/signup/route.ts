@@ -37,26 +37,32 @@ export async function POST(request: Request) {
         );
       } else {
         const hasedPassword = await bcrypt.hash(password, 10);
+
         const expirayDate = new Date();
         expirayDate.setHours(expirayDate.getHours() + 1);
+
+        const verfiyCode = Math.floor(
+          100000 + Math.random() * 900000,
+        ).toString();
+
+        const newUser = new UserModel({
+          username,
+          email,
+          password: hasedPassword,
+          verfiyCode,
+          verifyCodeExpiry: expirayDate,
+          isverify: false,
+          isAcceptingMesage: true,
+          messages: [],
+        });
+
+        await newUser.save();
+        const emailResponse = await sendVerificationEmail(
+          email,
+          username,
+          verfiyCode,
+        );
       }
-
-      const verificationCode = Math.floor(
-        100000 + Math.random() * 900000,
-      ).toString();
-      const newUser = new UserModel({
-        username,
-        email,
-        password: hasedPassword,
-        verfiyCode: verificationCode,
-        verifyCodeExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-        isverify: false,
-        isAcceptingMesage: true,
-        messages: [],
-      });
-      await sendVerificationEmail(email, verificationCode);
-
-      await newUser.save();
     }
   } catch (error) {
     console.error("Error in signup route:", error);
