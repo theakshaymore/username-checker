@@ -23,6 +23,21 @@ export async function POST(request: Request) {
         { status: 400 },
       );
 
+      const existingUserVerifiedByEmail = await UserModel.findOne({
+        email,
+        isVerified: true,
+      });
+
+      if (existingUserVerifiedByEmail) {
+        return Response.json(
+          {
+            success: false,
+            message: "Email is already registered.",
+          },
+          { status: 400 },
+        );
+      }
+
       const hasedPassword = await bcrypt.hash(password, 10);
       const verificationCode = Math.floor(
         100000 + Math.random() * 900000,
@@ -38,6 +53,7 @@ export async function POST(request: Request) {
         messages: [],
       });
       await sendVerificationEmail(email, verificationCode);
+
       await newUser.save();
     }
   } catch (error) {
