@@ -23,12 +23,11 @@ export async function POST(request: Request) {
         { status: 400 },
       );
 
-      const existingUserVerifiedByEmail = await UserModel.findOne({
+      const existingUserByEmail = await UserModel.findOne({
         email,
-        isVerified: true,
       });
 
-      if (existingUserVerifiedByEmail) {
+      if (existingUserByEmail) {
         return Response.json(
           {
             success: false,
@@ -36,9 +35,12 @@ export async function POST(request: Request) {
           },
           { status: 400 },
         );
+      } else {
+        const hasedPassword = await bcrypt.hash(password, 10);
+        const expirayDate = new Date();
+        expirayDate.setHours(expirayDate.getHours() + 1);
       }
 
-      const hasedPassword = await bcrypt.hash(password, 10);
       const verificationCode = Math.floor(
         100000 + Math.random() * 900000,
       ).toString();
